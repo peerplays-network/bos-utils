@@ -1,7 +1,10 @@
 This is a small script to automate proposals.
+
 The proposals automated are
+upcoming to in_progress
 in_progress to finished and
 finsihed to settled                                                                                                                  
+
 The usage is
 python3 mint_auto in_progress <eventid>
 python3 mint_auto finish 1.22.199
