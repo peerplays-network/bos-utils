@@ -25,13 +25,16 @@ class MintAuto():
             """
             This is a small script to automate proposals.
             The proposals automated are
+            upcoming to in_progress
             in_progress to finished and
             finsihed to settled
             The usage is
-            python3 mint_auto finish <eventid>, <scoreHomeTeam>,<scoreAwayTeam>
-            python3 mint_auto finish 1.22.199, 3,2
-            python3 mint_auto settle <eventid>, <scoreHomeTeam>,<scoreAwayTeam>
-            python3 mint_auto settle 1.22.199, 3,2
+            python3 mint_auto in_progress <eventid>
+            python3 mint_auto in_progress 1.22.199
+            python3 mint_auto finish <eventid> <scoreHomeTeam>,<scoreAwayTeam>
+            python3 mint_auto finish 1.22.199 3,2
+            python3 mint_auto settle <eventid> <scoreHomeTeam>,<scoreAwayTeam>
+            python3 mint_auto settle 1.22.199 3,2
             """
         with open('config_mint_auto.yaml', 'r') as fid:
             config = yaml.safe_load(fid)
@@ -65,8 +68,7 @@ class MintAuto():
         self.ppy.event_update_status(
             event_id=eventId, status="finished", scores=scores,
             append_to=self.proposal)
-        """event_id=eventId, status="finished",
-        scores=["2,1"], append_to=proposal)"""
+        """scores=["2,1"], append_to=proposal)"""
         pprint(self.proposal.broadcast())
 
     def Ppy(self):
@@ -220,7 +222,6 @@ class MintAuto():
                 self.ppy.betting_market_resolve(bmg['id'], result)
                 os.system('clear')
         self.ppy.txbuffer.broadcast()
-        # pprint(self.ppy.txbuffer.broadcast())
         # self.ppy.event_update_status(
         #        event_id=eventId, status="settled", append_to=self.proposal)
         # event_id=eventId, status="finished",
