@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+import getch
+import time
 import numpy as np
 import json
 import os
@@ -39,8 +41,7 @@ class MintAuto():
         with open('config_mint_auto.yaml', 'r') as fid:
             config = yaml.safe_load(fid)
         self.config = config
-        # self.ppy = PeerPlays(config['node'])
-        # self.ppy.wallet.unlock(getpass())
+        self.ppy = self.Ppy()
 
     def InProgress(self, eventIds):
         self.ppy = PeerPlays(self.config['node'])
@@ -79,7 +80,10 @@ class MintAuto():
             nobroadcast=False,
             bundle=True
         )
-        self.ppy.wallet.unlock(getpass())
+        if 'password' in self.config:
+            self.ppy.wallet.unlock(self.config['password'])
+        else:
+            self.ppy.wallet.unlock(getpass())
         return self.ppy
 
     def Proposal(self):
@@ -148,7 +152,20 @@ class MintAuto():
         self._bms = bms
         resolves = self.Resolutions(metric, resolutions, bms)
         self._resolves = resolves
-        ppy.betting_market_resolve(bmg['id'], resolves)
+        print('')
+        pprint(self.eventDetails)
+        pprint(self._bmg)
+        print('Score:', score)
+        for k in range(len(bms)):
+            print(bms[k]['description'], resolves[k])
+        print('Enter to accept and continue, N to skip')
+        print('')
+        keyPressed = getch.getch()
+        #  keyPressed = '\n'
+        if keyPressed == '\n':
+            ppy.betting_market_resolve(bmg['id'], resolves)
+        else:
+            print('Skipped Resolutions for:', bmg)
 
     def SettleScore(self, eventId, score):
         if type(eventId) != str:
@@ -159,21 +176,64 @@ class MintAuto():
         if eventId.split('.')[0] != '1' and \
                 eventId.split('.')[1] != '22':
             raise Exception('Argument is not a valid eventId')
-        ppy = self.Ppy()
+        ppy = self.ppy
         #  proposal = self.Proposal()
-        #  eventDetails = ppy.rpc.get_object(eventId)
+        eventDetails = ppy.rpc.get_object(eventId)
         #  eventName = eventDetails['name'][0][1]
         #  teams = eventName.split(' v ')
-        #  self.eventDetails = eventDetails
-        bmgs = self.ppy.rpc.list_betting_market_groups(eventId)
+        self.eventDetails = eventDetails
+        bmgs = ppy.rpc.list_betting_market_groups(eventId)
         self.bmgs = bmgs
         k = 0
         for bmg in bmgs:
             k += 1
             print('bmg', k, '/', len(bmgs))
             self.SettleBmg(bmg, score, ppy)
-        ppy.txbuffer.broadcast()
-        print('Proposal broadcasted to settle', eventId)
+        from peerplays.proposal import Proposals
+        self.proposalsBeforeBroadcast = list(Proposals(
+            'witness-account', peerplays_instance=mintAuto.ppy))
+
+        self._returnBroadcast = ppy.txbuffer.broadcast()
+        print('Proposal broadcasted to settle event', eventId)
+
+        print('Waiting for confirmation, about 30 seconds')
+        time.sleep(5)
+        ppy = self.ppy
+        del Proposals
+        from peerplays.proposal import Proposals
+        self.proposalsAfterBroadcast = list(Proposals(
+            'witness-account', peerplays_instance=mintAuto.ppy))
+        while self.proposalsAfterBroadcast == []:
+            #  print(self.proposalsAfterBroadcast)
+            print('Waiting for confirmation, wait another 5 seconds')
+            time.sleep(5)
+            ppy = self.ppy
+            del Proposals
+            from peerplays.proposal import Proposals
+            self.proposalsAfterBroadcast = list(Proposals(
+                'witness-account', peerplays_instance=mintAuto.ppy))
+        #  print('to second while loop')
+
+        while self.proposalsAfterBroadcast[-1]\
+                in self.proposalsBeforeBroadcast:
+            print("Old proposals:", self.proposalsAfterBroadcast)
+            time.sleep(5)
+            ppy = self.ppy
+            del Proposals
+            from peerplays.proposal import Proposals
+            self.proposalsAfterBroadcast = list(Proposals(
+                'witness-account', peerplays_instance=mintAuto.ppy))
+        self.proposed = []
+        for item in self.proposalsAfterBroadcast:
+            if item not in self.proposalsBeforeBroadcast:
+                self.proposed.append(item)
+        pprint(self._returnBroadcast)
+        if len(self.proposed) > 1:
+            print(
+                'The code need further refinement to display the correct\
+                proposal among the displayed.')
+        print('')
+        print('Pushed proposal id is:', self.proposed)
 
     def Settle(self, eventIds):
         eventIds = eventIds.replace(' ', '')
