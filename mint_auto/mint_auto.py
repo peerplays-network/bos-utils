@@ -140,16 +140,45 @@ class MintAuto():
             resolves.append(resolve)
         return resolves
 
+    def BmsInOrder(self, bms):
+        idOld = None
+        for bm in bms:
+            idNew = int(bm['id'].split('.')[-1])
+            if not isinstance(idOld, type(None)):
+                if idNew - idOld != 1:
+                    return False
+            idOld = idNew
+        return True
+
     def SettleBmg(self, bmg, score, ppy):
         self._bmg = bmg
         rulesId = bmg['rules_id']
         metric, resolutions = self.Rule(ppy, rulesId)
         self._metric = metric
+        self._resolutions = resolutions
         result = self.Result(score)
         if result:  # dummy line to remove PEP warning
             metric = eval(metric)
         bms = ppy.rpc.list_betting_markets(bmg['id'])
         self._bms = bms
+        if not self.BmsInOrder(bms):
+            print('')
+            pprint(self.eventDetails)
+            pprint(self._bmg)
+            print('Communicate this BMG Id to the developer')
+            print('Score:', score)
+            resolves = []
+            for k in range(len(bms)):
+                print('Index: ', k)
+                pprint(bms[k])
+                print('     ')
+                resolves.append([bms[k]['id'], 'not_win'])
+            option = input(
+                'Enter the winner index or most suitable bm index: ')
+            resolves[int(option)][1] = 'win'
+            self._resolves = resolves
+            ppy.betting_market_resolve(bmg['id'], resolves)
+            return
         resolves = self.Resolutions(metric, resolutions, bms)
         self._resolves = resolves
         print('')
@@ -191,7 +220,7 @@ class MintAuto():
             self.SettleBmg(bmg, score, ppy)
         from peerplays.proposal import Proposals
         self.proposalsBeforeBroadcast = list(Proposals(
-            'witness-account', peerplays_instance=mintAuto.ppy))
+            'witness-account', peerplays_instance=self.ppy))
 
         self._returnBroadcast = ppy.txbuffer.broadcast()
         print('Proposal broadcasted to settle event', eventId)
@@ -202,7 +231,7 @@ class MintAuto():
         del Proposals
         from peerplays.proposal import Proposals
         self.proposalsAfterBroadcast = list(Proposals(
-            'witness-account', peerplays_instance=mintAuto.ppy))
+            'witness-account', peerplays_instance=self.ppy))
         while self.proposalsAfterBroadcast == []:
             #  print(self.proposalsAfterBroadcast)
             print('Waiting for confirmation, wait another 5 seconds')
@@ -211,7 +240,7 @@ class MintAuto():
             del Proposals
             from peerplays.proposal import Proposals
             self.proposalsAfterBroadcast = list(Proposals(
-                'witness-account', peerplays_instance=mintAuto.ppy))
+                'witness-account', peerplays_instance=self.ppy))
         #  print('to second while loop')
 
         while self.proposalsAfterBroadcast[-1]\
@@ -222,7 +251,7 @@ class MintAuto():
             del Proposals
             from peerplays.proposal import Proposals
             self.proposalsAfterBroadcast = list(Proposals(
-                'witness-account', peerplays_instance=mintAuto.ppy))
+                'witness-account', peerplays_instance=self.ppy))
         self.proposed = []
         for item in self.proposalsAfterBroadcast:
             if item not in self.proposalsBeforeBroadcast:
