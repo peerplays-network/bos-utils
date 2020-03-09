@@ -177,8 +177,8 @@ class MintAuto():
                 'Enter the winner index or most suitable bm index: ')
             resolves[int(option)][1] = 'win'
             self._resolves = resolves
-            ppy.betting_market_resolve(bmg['id'], resolves)
-            return
+            # ppy.betting_market_resolve(bmg['id'], resolves)
+            return bmg['id'], resolves
         resolves = self.Resolutions(metric, resolutions, bms)
         self._resolves = resolves
         print('')
@@ -192,7 +192,8 @@ class MintAuto():
         keyPressed = getch.getch()
         #  keyPressed = '\n'
         if keyPressed == '\n':
-            ppy.betting_market_resolve(bmg['id'], resolves)
+            # ppy.betting_market_resolve(bmg['id'], resolves)
+            return bmg['id'], resolves
         else:
             print('Skipped Resolutions for:', bmg)
 
@@ -214,10 +215,17 @@ class MintAuto():
         bmgs = ppy.rpc.list_betting_market_groups(eventId)
         self.bmgs = bmgs
         k = 0
+        resolvesAll = []
         for bmg in bmgs:
             k += 1
             print('bmg', k, '/', len(bmgs))
-            self.SettleBmg(bmg, score, ppy)
+            resolves = self.SettleBmg(bmg, score, ppy)
+            resolvesAll.append(resolves)
+        self._resolvesAll = resolvesAll
+        for item in resolvesAll:
+            if not isinstance(item, type(None)):
+                ppy.betting_market_resolve(item[0], item[1])
+
         from peerplays.proposal import Proposals
         self.proposalsBeforeBroadcast = list(Proposals(
             'witness-account', peerplays_instance=self.ppy))
