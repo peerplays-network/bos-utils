@@ -1,3 +1,2 @@
-numpy==1.18.1
-peerplays==0.3.12
-PyYAML==5.3
+getch
+numpy
