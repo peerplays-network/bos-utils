@@ -1,0 +1,43 @@
+Create event (atleast 2 required)
+
+http://174.138.14.239:8010/replay?token=pbsabookie&restrict_witness_group=elizabeth&manufacture=2020-01-11T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__create__2020
+http://149.56.89.138:8010/replay?token=pbsabookie&restrict_witness_group=elizabeth&manufacture=2020-01-11T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__create__2020
+
+
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-20T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__create__2019
+http://95.216.13.245:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-20T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__create__2019
+http://174.138.14.239:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-20T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__create__2019
+Event start (one incident is enough)
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-20T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__in_progress__2019-03-20T200000z
+Finish (atleast 2 incidents required)
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-20T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__finish__2019-03-20T200000z
+http://174.138.14.239:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-20T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__finish__2019-03-20T200000z
+Result (atleast 2 incidents)
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-20T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__result__2__3
+http://174.138.14.239:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-20T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__result__2__3
+http://95.216.13.245:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-20T20:00:00Z__Soccer__SerieA__Bologna__Cagliari__result__2__3
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-12t00:30:00z__basketball__nba-regular-season__Booklyn-Nets__Detroit-Pistons__result__103__75
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-02-24t120000z__Soccer__Epl__Chelsea__Brighton__finish__2019-03-03t160030z
+http://174.138.14.239:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-02-24t120000z__Soccer__Epl__Chelsea__Brighton__finish__2019-03-03t160030z
+http://95.216.13.245:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-02-24t120000z__Soccer__Epl__Chelsea__Brighton__finish__2019-03-03t160030z
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-02-24t120000z__Soccer__Epl__Chelsea__Brighton__result__2__3
+http://174.138.14.239:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-02-24t120000z__Soccer__Epl__Chelsea__Brighton__result__2__3
+http://95.216.13.245:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-02-24t120000z__Soccer__Epl__Chelsea__Brighton__result__2__3
+------------------------
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-14T12:00:00Z__Soccer__SerieA__Bologna__Cagliari__create__2019
+http://95.216.13.245:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-14T12:00:00Z__Soccer__SerieA__Bologna__Cagliari__create__2019
+http://174.138.14.239:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-14T12:00:00Z__Soccer__SerieA__Bologna__Cagliari__create__2019
+---------
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-15T14:00:00Z__Soccer__SerieA__Lazio__Parma__create__2019
+http://95.216.13.245:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-15T14:00:00Z__Soccer__SerieA__Lazio__Parma__create__2019
+http://174.138.14.239:8010/replay?token=pbsabookie&restrict_witness_group=beatrice&manufacture=2019-03-15T14:00:00Z__Soccer__SerieA__Lazio__Parma__create__2019
+//cancel examples
+"http://dp0.omnidata.tech:8010/replay?token=pbsabookie&only_report=True&restrict_witness_group=beatrice&manufacture=2019-04-21T23:00:00Z__Basketball__NBA Playoffs__Orlando Magic__Toronto Raptors__canceled__None",
+        "http://174.138.14.239:8010/replay?token=pbsabookie&only_report=True&restrict_witness_group=beatrice&manufacture=2019-04-21T23:00:00Z__Basketball__NBA Playoffs__Orlando Magic__Toronto Raptors__canceled__None",
+        "http://95.216.13.245:8010/replay?token=pbsabookie&only_report=True&restrict_witness_group=beatrice&manufacture=2019-04-21T23:00:00Z__Basketball__NBA Playoffs__Orlando Magic__Toronto Raptors__canceled__None"
+http://95.216.13.245:8010/replay?token=pbsabookie&restrict_witness_group=alice&manufacture=2019-05-05t170500Z__Baseball__MLB__New York Yankees__Minnesota Twins__canceled__None
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=alice&manufacture=2019-05-05t170500z__baseball__mlb__New York Yankees__Minnesota Twins__canceled__None
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=alice&manufacture=2019-06-29T020700Z__Baseball__MLB__Los Angeles Angels__Oakland Athletics__result__2__7
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=alice&manufacture=2019-06-29T021500Z__Baseball__MLB__San Francisco Giants__Arizona Diamondbacks__result__6__3
+http://dp0.omnidata.tech:8010/replay?token=pbsabookie&restrict_witness_group=elizabeth&manufacture=2019-07-04t21:10:00z__mlb-regular-season__tampa-bay-rays__new-york-yankees__create__2019
+http://174.138.14.239:8010/replay?token=pbsabookie&restrict_witness_group=elizabeth&manufacture=2019-03-20T20:00:00Z__Baseball__MLB__Los Angeles Angels__Oakland Athletics__create__2019
