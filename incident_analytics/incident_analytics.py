@@ -66,6 +66,15 @@ class IncidentAnalytics():
 
 
 if __name__ == "__main__":
+    print('')
     incidentAnalytics = IncidentAnalytics()
+    print('Analytics for Settled events')
+    settledAnalytics = incidentAnalytics.All(fate='result')
+    pprint(settledAnalytics)
+
+    print('')
+    print('Anlytics for Canceled events')
+    canceledAnalytics = incidentAnalytics.All(fate='canceled')
+    pprint(canceledAnalytics)
 
     self = incidentAnalytics
