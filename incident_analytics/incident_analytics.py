@@ -3,7 +3,8 @@
 
 from bos_incidents import factory
 from pprint import pprint
-
+from dateutil import parser
+import datetime as dt
 
 class IncidentAnalytics():
 
@@ -17,6 +18,14 @@ class IncidentAnalytics():
         eventsResultDone = []
         for eventCursor in eventsCursor:
             eventResultDone = self.storage.get_event_by_id(eventCursor['id_string'])
+            if not isinstance(begin, type(None)):
+                startTime = parser.parse(eventResultDone['id']['start_time']).replace(tzinfo=None)
+                if startTime < begin:
+                    continue
+            if not isinstance(end, type(None)):
+                startTime = parser.parse(eventResultDone['id']['start_time']).replace(tzinfo=None)
+                if startTime > end:
+                    continue
             eventsResultDone.append(eventResultDone)
         return eventsResultDone
 
@@ -56,18 +65,18 @@ class IncidentAnalytics():
             sumUp[providerName] = len(providersDict[providerName])
         return sumUp
 
-    def All(self, fate='result'):
+    def All(self, begin=None, end=None, fate='result'):
         if fate != 'result':
             fate = 'canceled'
-        eventsResultDone = self.EventsResultDone(call=fate)
+        eventsResultDone = self.EventsResultDone(begin, end, call=fate)
         providersDict = self.ProvidersDict(eventsResultDone, fate=fate)
         sumUp = self.SumUp(providersDict)
         return sumUp
 
 
 if __name__ == "__main__":
-    print('')
     incidentAnalytics = IncidentAnalytics()
+    print('')
     print('Analytics for Settled events')
     settledAnalytics = incidentAnalytics.All(fate='result')
     pprint(settledAnalytics)
@@ -76,5 +85,10 @@ if __name__ == "__main__":
     print('Anlytics for Canceled events')
     canceledAnalytics = incidentAnalytics.All(fate='canceled')
     pprint(canceledAnalytics)
+# ------------------------------
+    print('')
+    print('Analytics for Settled events between two dates')
+    settledAnalytics = incidentAnalytics.All(begin=dt.datetime(2020,1,1), end=dt.datetime(2020,2,28), fate='result')
+    pprint(settledAnalytics)
 
     self = incidentAnalytics
