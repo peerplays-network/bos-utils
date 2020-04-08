@@ -4,6 +4,8 @@
 import requests
 import numpy as np
 import json
+import time
+from multiprocessing import Pool
 
 urlBase = 'https://dick-faucet.peerplays.download'
 api = '/api/v1/accounts'
@@ -26,7 +28,9 @@ def JTest(name=None):
     return jTest
 
 def Bombard(jTest):
+    tic = time.time()
     r = requests.post(url, json=jTest)
+    print('time = ', time.time() - tic)
     text = r.text
     # print(jTest)
     textDict = json.loads(text)
@@ -35,17 +39,27 @@ def Bombard(jTest):
         return True
         # return True, textDict
     else:
+        print('FAILED:', text)
         # return False, textDict
         return False
 
-def Bombards(count):
+def Bombards(count, numberOfProcesses):
     jTests = []
     for k in range(count):
         jTest = JTest()
         jTests.append(jTest)
-    resBombards = []
-    textDicts = []
-    r = list(map(Bombard, jTests))
+    # resBombards = []
+    # textDicts = []
+    tic = time.time()
+    p = Pool(processes=numberOfProcesses)
+    print('starting pool map')
+    r = p.map(Bombard, jTests)
+    print('done pool map')
+    p.close()
+    print('closed pool')
+    #r = list(map(Bombard, jTests))
+    toc = time.time() - tic
+    print('timePerCall = ', toc / count, 'succeesScore:', np.sum(r) * 100 / count)
     return r
 #    for k in range(count):
 #        jTest = jTests[k]
