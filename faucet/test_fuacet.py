@@ -29,19 +29,28 @@ def JTest(name=None):
 
 def Bombard(jTest):
     tic = time.time()
-    r = requests.post(url, json=jTest)
-    print('time = ', time.time() - tic)
-    text = r.text
-    # print(jTest)
-    textDict = json.loads(text)
-    if 'account' in textDict:
-        print('name:', textDict['account']['name'])
-        return True
-        # return True, textDict
-    else:
-        print('FAILED:', text)
-        # return False, textDict
+    try:
+        r = requests.post(url, json=jTest)
+        tocReq = time.time() - tic
+        # print('time = ', time.time() - tic)
+        text = r.text
+        # print(jTest)
+        textDict = json.loads(text)
+        if 'account' in textDict:
+            print('name:', textDict['account']['name'], tocReq, time.time() - tic)
+            return True
+            # return True, textDict
+        else:
+            print('FAILED:', text, tocReq, time.time() - tic)
+            # return False, textDict
+            return False
+    except Exception as e:
+        print('text:', text)
+        print('exception Type:', type(e))
+        print('exception Args:', e.args)
+        print('e', e)
         return False
+
 
 def Bombards(count, numberOfProcesses):
     jTests = []
