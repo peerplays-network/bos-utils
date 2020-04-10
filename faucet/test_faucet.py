@@ -30,7 +30,7 @@ def JTest(name=None):
 def Bombard(jTest):
     tic = time.time()
     try:
-        r = requests.post(url, json=jTest)
+        r = requests.post(url, json=jTest, timeout=120)
         tocReq = time.time() - tic
         # print('time = ', time.time() - tic)
         text = r.text
