@@ -8,7 +8,9 @@ import time
 from multiprocessing import Pool
 
 urlBase = 'https://dick-faucet.peerplays.download'
+# urlBase = 'http://35.182.6.94:5000'
 api = '/api/v1/accounts'
+# api = '/api/v2/accounts'
 
 url = urlBase + api
 
@@ -30,7 +32,7 @@ def JTest(name=None):
 def Bombard(jTest):
     tic = time.time()
     try:
-        r = requests.post(url, json=jTest, timeout=120)
+        r = requests.post(url, json=jTest, timeout=(300, 600))
         tocReq = time.time() - tic
         # print('time = ', time.time() - tic)
         text = r.text
