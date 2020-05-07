@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# version 0.0.6
+# CancelBmg Added
 
 import getch
 import time
@@ -37,11 +39,46 @@ class MintAuto():
             python3 mint_auto finish 1.22.199 3,2
             python3 mint_auto settle <eventid> <scoreHomeTeam>,<scoreAwayTeam>
             python3 mint_auto settle 1.22.199 3,2
+            python3 mint_auto cancel <eventid>
+            python3 mint_auto cancel 1.22.199
+            python3 mint_auto cancel_bmg <bmgid>
+            python3 mint_auto cancel_bmg 1.24.2
             """
         with open('config_mint_auto.yaml', 'r') as fid:
             config = yaml.safe_load(fid)
         self.config = config
         self.ppy = self.Ppy()
+
+    def CancelBmg(self, bmgIds):
+        self.ppy = PeerPlays(self.config['node'])
+        self.ppy.wallet.unlock(getpass())
+        self.proposal = self.ppy.proposal(
+            proposer=self.config['proposer'],
+            proposal_expiration=self.config['proposal_expiration'])
+        bmgIds = bmgIds.replace(' ', '')
+        bmgIds = bmgIds.split(',')
+        for bmgId in bmgIds:
+            print(bmgId)
+            # self.ppy.event_update_status(
+            self.ppy.betting_market_group_update(
+                betting_market_group_id=bmgId, status="canceled",
+                append_to=self.proposal)
+        pprint(self.proposal.broadcast())
+
+    def Cancel(self, eventIds):
+        self.ppy = PeerPlays(self.config['node'])
+        self.ppy.wallet.unlock(getpass())
+        self.proposal = self.ppy.proposal(
+            proposer=self.config['proposer'],
+            proposal_expiration=self.config['proposal_expiration'])
+        eventIds = eventIds.replace(' ', '')
+        eventIds = eventIds.split(',')
+        for eventId in eventIds:
+            print(eventId)
+            self.ppy.event_update_status(
+                event_id=eventId, status="canceled",
+                append_to=self.proposal)
+        pprint(self.proposal.broadcast())
 
     def InProgress(self, eventIds):
         self.ppy = PeerPlays(self.config['node'])
@@ -334,17 +371,24 @@ if __name__ == "__main__":
     elif len(sys.argv) >= 3:
         method = sys.argv[1]
         eventIds = sys.argv[2]
-        print('method:', method, '  eventId:', eventIds)
-
-        if method == "in_progress":
+        if method == 'cancel_bmg':
+            print('method:', method, '  bmgId:', eventIds)
+            mintAuto.CancelBmg(eventIds)
+        elif method == "cancel":
+            print('method:', method, '  eventId:', eventIds)
+            mintAuto.Cancel(eventIds)
+        elif method == "in_progress":
+            print('method:', method, '  eventId:', eventIds)
             mintAuto.InProgress(eventIds)
         elif method == 'finish':
+            print('method:', method, '  eventId:', eventIds)
             if len(sys.argv) >= 4:
                 scores = sys.argv[3]
             else:
                 scores = []
             mintAuto.Finish(eventIds, scores)
         elif method == 'settle':
+            print('method:', method, '  eventId:', eventIds)
             if len(sys.argv) != 4:
                 print(
                     """Add score to argumenets in""",
@@ -354,6 +398,7 @@ if __name__ == "__main__":
             score = eval(sys.argv[3])
             mintAuto.SettleScore(eventIds, score)
         else:
+            print('method:', method, '  eventId:', eventIds)
             print('Wrong command')
             print(mintAuto.helpText)
     else:
