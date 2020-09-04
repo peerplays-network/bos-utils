@@ -1,4 +1,5 @@
-node: ws://ec2-99-79-98-229.ca-central-1.compute.amazonaws.com:8090
+# node: ws://ec2-99-79-98-229.ca-central-1.compute.amazonaws.com:8090
+node: wss://hercules.peerplays.download/api
 proposer: 'init1'
 proposal_expiration: 300
-#  password: <wallet password here>
+password: peerplays**

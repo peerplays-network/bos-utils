@@ -2,7 +2,8 @@
 # -*- coding: utf-8 -*-
 # version 0.0.6
 # CancelBmg Added
-
+from bos_mint.node import Node
+from graphenecommon.exceptions import ProposalDoesNotExistException
 import getch
 import time
 import numpy as np
@@ -14,6 +15,9 @@ from peerplays import PeerPlays
 from getpass import getpass
 from pprint import pprint
 import re
+
+accounts = ["1.2.1", "1.2.8", "1.2.9", "1.2.10", "1.2.11", "1.2.12", "1.2.13",
+            "1.2.14", "1.2.15"]
 
 
 def RemoveBraces(string):
@@ -48,6 +52,7 @@ class MintAuto():
             config = yaml.safe_load(fid)
         self.config = config
         self.ppy = self.Ppy()
+        self.ppyTrans = self.PpyTrans()
 
     def CancelBmg(self, bmgIds):
         self.ppy = PeerPlays(self.config['node'])
@@ -79,6 +84,16 @@ class MintAuto():
                 event_id=eventId, status="canceled",
                 append_to=self.proposal)
         pprint(self.proposal.broadcast())
+
+    def CancelAll(self, start, end):
+        for k in range(start, end+1):
+            eventId = "1.22." + str(k)
+            try:
+                self.Cancel(eventId)
+                print("eventId ", eventId, " canceled")
+                self.ApproveAll("1.2.1")
+            except Exception as e:
+                print(e)
 
     def InProgress(self, eventIds):
         self.ppy = PeerPlays(self.config['node'])
@@ -122,6 +137,20 @@ class MintAuto():
         else:
             self.ppy.wallet.unlock(getpass())
         return self.ppy
+
+    def PpyTrans(self):
+        self.ppyTrans = PeerPlays(
+            self.config['node'],
+            proposer=None,
+            # proposal_expiration=None,
+            nobroadcast=False,
+            bundle=False
+        )
+        if 'password' in self.config:
+            self.ppyTrans.wallet.unlock(self.config['password'])
+        else:
+            self.ppyTrans.wallet.unlock(getpass())
+        return self.ppyTrans
 
     def Proposal(self):
         self.proposal = self.ppy.proposal(
@@ -362,6 +391,53 @@ class MintAuto():
         # scores=["2,1"], append_to=proposal)
         # pprint(self.proposal.broadcast())
 
+    def ApproveProposal(self, proposalId):
+        for account in accounts:
+            print("account:", account)
+            try:
+                tx = self.ppyTrans.approveproposal(proposalId, account=account)
+                print(tx)
+                self._tx = tx
+            except ProposalDoesNotExistException:
+                print("Proposal Accepted")
+                return
+            except Exception as e:
+                print("Something went bad")
+                print("e:", e)
+                return e
+
+    def DeleteProposal(self, proposalId):
+        proposal = self.ppyTrans.rpc.get_object(proposalId)
+        if type(proposal) == type(None):
+            print(proposalId, "does not exist on the chain")
+            return 
+        proposer = proposal["proposer"]
+        print("proposer:", proposer)
+        try:
+            tx = self.ppyTrans.deleteproposal(proposalId, account=proposer)
+            print(tx)
+            self._tx = tx
+        except ProposalDoesNotExistException:
+            print("Proposal Deleted")
+            return
+        except Exception as e:
+            print("Something went bad")
+            return e 
+
+    def ProposalIds(self, proposer):
+        proposalsAll = self.ppyTrans.rpc.get_proposed_transactions(proposer) 
+        proposalIds = []
+        for proposal in proposalsAll:
+            proposalIds.append(proposal["id"])
+        return proposalIds
+
+    def ApproveAll(self, proposer):
+        proposalIds = self.ProposalIds(proposer)
+        print(proposalIds)
+        print("number of proposals = ", len(proposalIds))
+        for proposalId in proposalIds:
+            print("proposalId = ", proposalId)
+            self.ApproveProposal(proposalId)
 
 if __name__ == "__main__":
     mintAuto = MintAuto()
