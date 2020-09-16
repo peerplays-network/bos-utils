@@ -72,7 +72,7 @@ class MintAuto():
 
     def Cancel(self, eventIds):
         self.ppy = PeerPlays(self.config['node'])
-        self.ppy.wallet.unlock(getpass())
+        self.ppy.wallet.unlock(self.config['password'])
         self.proposal = self.ppy.proposal(
             proposer=self.config['proposer'],
             proposal_expiration=self.config['proposal_expiration'])
@@ -97,7 +97,7 @@ class MintAuto():
 
     def InProgress(self, eventIds):
         self.ppy = PeerPlays(self.config['node'])
-        self.ppy.wallet.unlock(getpass())
+        self.ppy.wallet.unlock(self.config['password'])
         self.proposal = self.ppy.proposal(
             proposer=self.config['proposer'],
             proposal_expiration=self.config['proposal_expiration'])
@@ -114,7 +114,7 @@ class MintAuto():
         self.ppy = PeerPlays(
             self.config['node']
         )
-        self.ppy.wallet.unlock(getpass())
+        self.ppy.wallet.unlock(self.config['password'])
         self.proposal = self.ppy.proposal(
             proposer=self.config['proposer'],
             proposal_expiration=self.config['proposal_expiration'])
@@ -424,7 +424,7 @@ class MintAuto():
             print("Something went bad")
             return e 
 
-    def ProposalIds(self, proposer):
+    def ProposalIds(self, proposer): # proposer shall be 1.2.1
         proposalsAll = self.ppyTrans.rpc.get_proposed_transactions(proposer) 
         proposalIds = []
         for proposal in proposalsAll:
